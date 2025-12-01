@@ -1,8 +1,23 @@
-use poem::{Route, Server, get, handler, listener::TcpListener, post, web::Path};
+use poem::{
+    Route, Server, get, handler,
+    listener::TcpListener,
+    post,
+    web::{Json, Path},
+};
+
+pub mod states;
+use crate::states::{CreateWebsiteInput, CreateWebsiteOutput};
 
 #[handler]
-fn create_website(Path(website_id): Path<String>) -> String {
-    format!("hello: {}", website_id)
+fn create_website(Json(data): Json<CreateWebsiteInput>) -> Json<CreateWebsiteOutput> {
+    // let url = data.url;
+
+    let res = CreateWebsiteOutput {
+        // id: String::from("ID"),
+        id: data.url,
+    };
+
+    Json(res)
 }
 
 #[handler]

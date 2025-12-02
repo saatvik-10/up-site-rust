@@ -1,11 +1,55 @@
-use crate::db::Db;
+use crate::{db::Db, schema::user};
+use diesel::prelude::*;
+use uuid::Uuid;
+
+#[derive(Queryable, Insertable, Selectable)]
+#[diesel(table_name = crate::schema::user)]
+#[diesel(check_for_backend(diesel::pg::Pg))]
+
+struct User {
+    id: String,
+    username: String,
+    password: String,
+}
 
 impl Db {
-    pub fn create_user(&self) {
-        println!("Create User");
+    pub fn user_sign_up(
+        &mut self,
+        username: String,
+        password: String,
+    ) -> Result<String, diesel::result::Error> {
+        let user_id = Uuid::new_v4();
+
+        let new_user = User {
+            id: user_id.to_string(),
+            username,
+            password,
+        };
+
+        diesel::insert_into(user::table)
+            .values(&new_user)
+            .returning(User::as_returning())
+            .get_result(&mut self.conn)?;
+
+        Ok(user_id.to_string())
     }
 
-    pub fn get_user(&self) -> String {
-        String::from("1")
+    pub fn user_sign_in(
+        &mut self,
+        input_username: String,
+        input_password: String,
+    ) -> Result<bool, diesel::result::Error> {
+        let user = user::table
+            .filter(user::username.eq(input_username))
+            .select(User::as_select())
+            .first(&mut self.conn)
+            .optional()?
+            .ok_or(diesel::result::Error::NotFound)?;
+
+        if user.password != input_password {
+            return Ok(false);
+        }
+
+        Ok(true)
     }
 }

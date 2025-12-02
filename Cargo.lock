@@ -15,6 +15,7 @@ dependencies = [
 name = "api"
 version = "0.1.0"
 dependencies = [
+ "db",
  "poem",
  "serde",
  "tokio",
@@ -83,6 +84,10 @@ dependencies = [
  "generic-array",
  "typenum",
 ]
+
+[[package]]
+name = "db"
+version = "0.1.0"
 
 [[package]]
 name = "digest"
@@ -649,10 +654,6 @@ dependencies = [
  "libc",
  "windows-sys 0.60.2",
 ]
-
-[[package]]
-name = "store"
-version = "0.1.0"
 
 [[package]]
 name = "syn"

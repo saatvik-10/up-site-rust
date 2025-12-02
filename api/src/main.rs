@@ -7,13 +7,13 @@ use poem::{
 
 pub mod states;
 
-use db::Db;
+use db::db::Db;
 use crate::states::{CreateWebsiteInput, CreateWebsiteOutput};
 
 #[handler]
 fn create_website(Json(_data): Json<CreateWebsiteInput>) -> Json<CreateWebsiteOutput> {
     // let url = data.url;
-    let d = Db{};
+    let d = Db::default();
     let id = d.create_website();
 
     let res = CreateWebsiteOutput {

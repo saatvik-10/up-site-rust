@@ -6,15 +6,19 @@ use poem::{
 };
 
 pub mod states;
+
+use db::Db;
 use crate::states::{CreateWebsiteInput, CreateWebsiteOutput};
 
 #[handler]
-fn create_website(Json(data): Json<CreateWebsiteInput>) -> Json<CreateWebsiteOutput> {
+fn create_website(Json(_data): Json<CreateWebsiteInput>) -> Json<CreateWebsiteOutput> {
     // let url = data.url;
+    let d = Db{};
+    let id = d.create_website();
 
     let res = CreateWebsiteOutput {
-        // id: String::from("ID"),
-        id: data.url,
+        // id: data.url,
+        id
     };
 
     Json(res)

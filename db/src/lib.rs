@@ -1,3 +1,5 @@
+pub mod schema;
+
 pub struct Db {
     conn: Connection
 }

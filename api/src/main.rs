@@ -1,3 +1,5 @@
+use crate::states::{CreateWebsiteInput, CreateWebsiteOutput};
+use db::db::Db;
 use poem::{
     Route, Server, get, handler,
     listener::TcpListener,
@@ -7,19 +9,13 @@ use poem::{
 
 pub mod states;
 
-use db::db::Db;
-use crate::states::{CreateWebsiteInput, CreateWebsiteOutput};
-
 #[handler]
-fn create_website(Json(_data): Json<CreateWebsiteInput>) -> Json<CreateWebsiteOutput> {
+fn create_website(Json(data): Json<CreateWebsiteInput>) -> Json<CreateWebsiteOutput> {
     // let url = data.url;
-    let d = Db::default();
-    let id = d.create_website();
+    let mut d = Db::default().unwrap();
+    let website = d.create_website(String::from("1"), data.url).unwrap();
 
-    let res = CreateWebsiteOutput {
-        // id: data.url,
-        id
-    };
+    let res = CreateWebsiteOutput { id: website.id };
 
     Json(res)
 }

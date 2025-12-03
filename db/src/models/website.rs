@@ -29,7 +29,7 @@ impl Db {
             time_added: Utc::now().naive_local(),
         };
 
-        diesel::insert_into(website::table)
+        let new_website = diesel::insert_into(website::table)
             .values(&new_website)
             .returning(Website::as_returning())
             .get_result(&mut self.conn)?;

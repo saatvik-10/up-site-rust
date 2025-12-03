@@ -6,10 +6,10 @@ use uuid::Uuid;
 #[diesel(table_name = crate::schema::user)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
 
-struct User {
-    id: String,
-    username: String,
-    password: String,
+pub struct User {
+    pub id: String,
+    pub username: String,
+    pub password: String,
 }
 
 impl Db {
@@ -17,7 +17,7 @@ impl Db {
         &mut self,
         username: String,
         password: String,
-    ) -> Result<String, diesel::result::Error> {
+    ) -> Result<User, diesel::result::Error> {
         let user_id = Uuid::new_v4();
 
         let new_user = User {
@@ -26,12 +26,12 @@ impl Db {
             password,
         };
 
-        diesel::insert_into(user::table)
+        let new_user = diesel::insert_into(user::table)
             .values(&new_user)
             .returning(User::as_returning())
             .get_result(&mut self.conn)?;
 
-        Ok(user_id.to_string())
+        Ok(new_user)
     }
 
     pub fn user_sign_in(

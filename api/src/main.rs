@@ -4,14 +4,13 @@ use poem::{
     Route, Server, get, handler,
     listener::TcpListener,
     post,
-    web::{self, Json, Path},
+    web::{Json, Path},
 };
 
 pub mod states;
 
 #[handler]
 fn create_website(Json(data): Json<WebsiteInput>) -> Json<WebsiteOutput> {
-    // let url = data.url;
     let mut d = Db::default().unwrap();
     let website = d.create_website(String::from("1"), data.url).unwrap();
 
@@ -24,8 +23,16 @@ fn create_website(Json(data): Json<WebsiteInput>) -> Json<WebsiteOutput> {
 }
 
 #[handler]
-fn get_website(Path(website_id): Path<String>) -> String {
-    format!("hello: {}", website_id)
+fn get_website(Path(website_id): Path<String>) -> Json<WebsiteOutput> {
+    let mut d = Db::default().unwrap();
+    let website = d.get_website(website_id).unwrap();
+
+    let res = WebsiteOutput {
+        id: website.id,
+        url: website.url,
+    };
+
+    Json(res)
 }
 
 #[handler]
@@ -44,7 +51,7 @@ fn user_sign_up(Json(data): Json<UserInput>) -> Json<UserOutput> {
 #[handler]
 fn user_sign_in(Json(data): Json<UserInput>) -> Json<JwtOutput> {
     let mut d = Db::default().unwrap();
-    let user = d.user_sign_up(data.username, data.password).unwrap();
+    let _user = d.user_sign_in(data.username, data.password).unwrap();
 
     let res = JwtOutput {
         jwt: String::from("sm"),
@@ -57,7 +64,9 @@ fn user_sign_in(Json(data): Json<UserInput>) -> Json<JwtOutput> {
 async fn main() -> Result<(), std::io::Error> {
     let app = Route::new()
         .at("/status/:website_id", get(get_website))
-        .at("/website", post(create_website));
+        .at("/website", post(create_website))
+        .at("/user/sign-up", post(user_sign_up))
+        .at("/user/sign-in", post(user_sign_in));
 
     Server::new(TcpListener::bind("0.0.0.0:3001"))
         .run(app)

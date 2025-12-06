@@ -8,6 +8,7 @@ use std::sync::{Arc, Mutex};
 
 pub mod handlers;
 pub mod states;
+pub mod err;
 
 #[tokio::main(flavor = "multi_thread")]
 async fn main() -> Result<(), std::io::Error> {

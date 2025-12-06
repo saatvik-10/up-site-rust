@@ -33,12 +33,15 @@ CREATE TABLE "website_tick" (
     "id" TEXT NOT NULL,
     "response_time_ms" INTEGER NOT NULL,
     "status" "website_status" NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "region_id" TEXT NOT NULL,
     "website_id" TEXT NOT NULL,
 
-    CONSTRAINT "websiteTick_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "website_tick_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "user_username_key" ON "user"("username");
 
 -- AddForeignKey
 ALTER TABLE "website" ADD CONSTRAINT "website_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -38,7 +38,7 @@ diesel::table! {
         id -> Text,
         response_time_ms -> Int4,
         status -> WebsiteStatus,
-        createdAt -> Timestamp,
+        created_at -> Timestamp,
         region_id -> Text,
         website_id -> Text,
     }

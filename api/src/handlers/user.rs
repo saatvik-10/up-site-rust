@@ -12,16 +12,18 @@ use poem::{
 pub fn user_sign_up(
     Json(data): Json<UserInput>,
     Data(db): Data<&Arc<Mutex<Db>>>,
-) -> Json<UserOutput> {
+) -> Result<Json<UserOutput>, Error> {
     let mut db_lock = db.lock().unwrap();
-    let user = db_lock.user_sign_up(data.username, data.password).unwrap();
+    let user = db_lock
+        .user_sign_up(data.username, data.password)
+        .map_err(|_| Error::from_status(StatusCode::CONFLICT))?;
 
     let res = UserOutput {
         id: user.id,
         username: user.username,
     };
 
-    Json(res)
+    Ok(Json(res))
 }
 
 #[handler]

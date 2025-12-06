@@ -47,9 +47,9 @@ impl Db {
             .ok_or(diesel::result::Error::NotFound)?;
 
         if user.password != input_password {
-            return Ok(user.id);
+            return Err(diesel::result::Error::NotFound);
         }
 
-        Err(diesel::result::Error::NotFound)
+        Ok(user.id)
     }
 }

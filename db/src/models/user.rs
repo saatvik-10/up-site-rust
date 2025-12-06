@@ -38,7 +38,7 @@ impl Db {
         &mut self,
         input_username: String,
         input_password: String,
-    ) -> Result<bool, diesel::result::Error> {
+    ) -> Result<String, diesel::result::Error> {
         let user = user::table
             .filter(user::username.eq(input_username))
             .select(User::as_select())
@@ -47,9 +47,9 @@ impl Db {
             .ok_or(diesel::result::Error::NotFound)?;
 
         if user.password != input_password {
-            return Ok(false);
+            return Ok(user.id);
         }
 
-        Ok(true)
+        Err(diesel::result::Error::NotFound)
     }
 }

@@ -9,3 +9,4 @@ serde = { version = "1.0.228", features = ["derive"] }
 tokio = { version = "1.48.0", features = ["full"] }
 db = { path = "../db" }
 dotenvy = "0.15.7"
+thiserror = "2.0.17"

@@ -1,7 +1,8 @@
 use std::sync::{Arc, Mutex};
 
-use crate::states::{JwtOutput, UserInput, UserOutput};
+use crate::states::{Claims, JwtOutput, UserInput, UserOutput};
 use db::db::Db;
+use jsonwebtoken::{EncodingKey, Header};
 use poem::{
     Error, handler,
     http::StatusCode,
@@ -36,7 +37,20 @@ pub fn user_sign_in(
 
     match user_id {
         Ok(user_id) => {
-            let res = JwtOutput { jwt: user_id };
+            let my_claims = Claims {
+                sub: user_id,
+                exp: 111111111,
+            };
+
+            let token = encode(
+                &Header::default(),
+                &my_claims,
+                &EncodingKey::from_secret("secret".as_ref()),
+            )
+            .map_err(|_| Error::from_status(StatusCode::UNAUTHORIZED))?;
+
+            let res = JwtOutput { jwt: token };
+
             Ok(Json(res))
         }
         Err(_e) => Err(Error::from_status(StatusCode::UNAUTHORIZED)),

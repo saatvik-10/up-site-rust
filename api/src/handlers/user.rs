@@ -2,7 +2,7 @@ use std::sync::{Arc, Mutex};
 
 use crate::states::{Claims, JwtOutput, UserInput, UserOutput};
 use db::db::Db;
-use jsonwebtoken::{EncodingKey, Header};
+use jsonwebtoken::{EncodingKey, Header, encode};
 use poem::{
     Error, handler,
     http::StatusCode,
